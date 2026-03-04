@@ -1,319 +1,244 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>STUDIO DUCK | Studio Duck</title>
+    <title>Studio Duck | Design & Identidade</title>
+    
     <style>
-        /* --- RESET & BASE --- */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&family=Montserrat:wght@100;900&display=swap');
+    </style>
 
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        duckYellow: '#FFFF00',
+                        duckDark: '#050505'
+                    },
+                    fontFamily: {
+                        sans: ['"Inter"', 'sans-serif'],
+                        montserrat: ['"Montserrat"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
         body {
             background-color: #050505;
             color: #ffffff;
-            font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
             overflow-x: hidden;
-            cursor: crosshair; /* Toque técnico/arquitetônico */
+            /* Esconde o cursor padrão em telas grandes para usarmos a nossa esfera interativa */
+            cursor: none; 
         }
-
-        /* --- FLUID BACKGROUND ANIMATION --- */
-        .ambient-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            background: linear-gradient(125deg, #000000, #1a0b2e, #0f2027, #2c5364, #203a43, #0f0c29);
-            background-size: 400% 400%;
-            animation: fluidGradient 15s ease infinite;
-            opacity: 0.8;
+        ::selection {
+            background-color: #FFFF00;
+            color: #000000;
         }
-
-        /* Noise Texture Overlay para dar textura de "papel/concreto" digital */
-        .noise-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: -1;
-            opacity: 0.05;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-        }
-
-        @keyframes fluidGradient {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        /* --- TYPOGRAPHY --- */
-        h1, h2, h3 {
-            text-transform: uppercase;
-            letter-spacing: -0.02em;
-        }
-
-        .hero-text {
-            font-size: 15vw;
-            line-height: 0.85;
-            font-weight: 700;
-            mix-blend-mode: overlay; /* Faz o texto interagir com o fundo */
-            opacity: 0.9;
-        }
-
-        .subtitle {
-            font-size: 1.2rem;
-            font-weight: 400;
-            letter-spacing: 0.05em;
-            margin-top: 2rem;
-            color: rgba(255, 255, 255, 0.7);
-        }
-
-        /* --- LAYOUT --- */
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 2rem 4rem;
-            position: fixed;
-            width: 100%;
-            z-index: 100;
-            mix-blend-mode: difference; /* Garante legibilidade em qualquer fundo */
-        }
-
-        .logo { font-weight: 700; font-size: 1.5rem; letter-spacing: -1px; }
-        .menu-btn { cursor: pointer; font-size: 1rem; text-transform: uppercase; }
-
-        section {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            padding: 4rem;
-            position: relative;
-        }
-
-        /* --- HERO SECTION --- */
-        #hero {
-            align-items: flex-start;
-            justify-content: center;
-        }
-
-        /* --- MANIFESTO SECTION --- */
-        #manifesto {
-            background: rgba(0,0,0,0.3);
-            backdrop-filter: blur(10px);
-            border-top: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .manifesto-grid {
-            display: grid;
-            grid-template-columns: 1fr 2fr;
-            gap: 4rem;
-        }
-
-        .manifesto-title {
-            font-size: 3rem;
-            line-height: 1;
-        }
-
-        .manifesto-text p {
-            font-size: 1.5rem;
-            line-height: 1.4;
-            margin-bottom: 2rem;
-            max-width: 800px;
-        }
-
-        /* --- MARQUEE (A Fita de "Fluxo") --- */
-        .marquee-container {
-            width: 100%;
-            overflow: hidden;
-            white-space: nowrap;
-            background: #fff;
-            color: #000;
-            padding: 1rem 0;
-            transform: rotate(-2deg) scale(1.05); /* Leve inclinação para dinamismo */
-        }
-
-        .marquee-content {
-            display: inline-block;
-            animation: marquee 20s linear infinite;
-            font-size: 2rem;
-            font-weight: 700;
-            text-transform: uppercase;
-        }
-
-        @keyframes marquee {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
-        }
-
-        /* --- ARTIFACTS (GRID) --- */
-        #artifacts {
-            padding: 0;
-        }
-
-        .bento-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            height: 100vh;
-            width: 100%;
-        }
-
-        .grid-item {
-            border: 1px solid rgba(255,255,255,0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            overflow: hidden;
-            transition: all 0.5s ease;
-        }
-
-        .grid-item:hover {
-            background: rgba(255,255,255,0.1);
-        }
-
-        .grid-item h3 {
-            position: absolute;
-            bottom: 2rem;
-            left: 2rem;
-            font-size: 1.5rem;
-            opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.3s ease;
-        }
-
-        .grid-item:hover h3 {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .grid-placeholder {
-            width: 60%;
-            height: 60%;
-            background: linear-gradient(45deg, #333, #666);
-            opacity: 0.3;
-            border-radius: 4px;
-        }
-
-        /* --- FOOTER --- */
-        footer {
-            padding: 4rem;
-            text-align: center;
-            border-top: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .cta-btn {
-            display: inline-block;
-            padding: 1.5rem 4rem;
-            border: 1px solid #fff;
-            color: #fff;
-            text-decoration: none;
-            font-size: 1.5rem;
-            text-transform: uppercase;
-            transition: all 0.3s ease;
-            margin-top: 2rem;
-        }
-
-        .cta-btn:hover {
-            background: #fff;
-            color: #000;
-            letter-spacing: 0.1em;
-        }
-
-        /* MOBILE */
+        .manifesto-word { opacity: 0.2; }
+        
+        /* Ajuste para o cursor customizado não interferir nos cliques */
+        #custom-cursor { pointer-events: none; }
+        
+        /* Traz o cursor padrão de volta em celulares (onde não há mouse real) */
         @media (max-width: 768px) {
-            header { padding: 1.5rem; }
-            .hero-text { font-size: 20vw; }
-            .manifesto-grid { grid-template-columns: 1fr; }
-            .bento-grid { grid-template-columns: 1fr; height: auto; }
-            .grid-item { aspect-ratio: 1/1; }
+            body { cursor: auto; }
+            #custom-cursor { display: none; }
         }
     </style>
 </head>
-<body>
+<body class="antialiased font-sans">
 
-    <div class="ambient-bg"></div>
-    <div class="noise-overlay"></div>
+    <div id="custom-cursor" class="fixed top-0 left-0 w-5 h-5 bg-duckYellow rounded-full z-[100] mix-blend-difference transform -translate-x-1/2 -translate-y-1/2 transition-transform duration-200 ease-out"></div>
 
-    <header>
-        <div class="logo">STUDIO DUCK</div>
-        <div class="menu-btn">/// MENU</div>
-    </header>
-
-    <section id="hero">
-        <div class="hero-text">WIP</div>
-        <div class="hero-text" style="margin-left: 10vw;">PROJECT</div>
-        <div class="subtitle">IDENTITY FOR A STATE OF PERPETUAL FLUX</div>
-    </section>
-
-    <div class="marquee-container">
-        <div class="marquee-content">
-            CLARITY VS FLUX — ALCHEMY IN PROGRESS — STREET LUXURY — STUDIO DUCK — CLARITY VS FLUX — ALCHEMY IN PROGRESS — STREET LUXURY — STUDIO DUCK —
-        </div>
-    </div>
-
-    <section id="manifesto">
-        <div class="manifesto-grid">
-            <div class="manifesto-title">
-                <h2>THE<br>CONCEPT</h2>
-            </div>
-            <div class="manifesto-text">
-                <p>O processo criativo não é linear; ele é fluido.</p>
-                <p>WIP (Work In Progress) deixa de ser sobre o rascunho bruto e passa a ser sobre a transformação. A identidade visual captura esse momento de alquimia.</p>
-                <p style="opacity: 0.6; font-size: 1rem;">[ THE DUALITY OF PROCESS: CLARITY VS. FLUX ]</p>
+    <nav class="fixed top-0 left-0 w-full z-50 transition-all duration-300 backdrop-blur-md bg-black/40 border-b border-white/5 px-6 py-4">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            
+            <a href="#hero" class="flex flex-col items-center justify-center text-white hover:scale-105 transition-transform font-montserrat">
+                <span class="text-[0.6rem] font-thin uppercase tracking-[0.4em] leading-none ml-1">Studio</span>
+                <span class="text-2xl font-black uppercase tracking-tighter leading-none -mt-1">Duck<span class="text-duckYellow">.</span></span>
+            </a>
+            
+            <div class="hidden md:flex gap-8 items-center">
+                <a href="#manifesto" class="text-sm font-bold uppercase tracking-widest text-gray-300 hover:text-duckYellow transition-colors relative group nav-link">
+                    Manifesto
+                    <span class="absolute -bottom-2 left-0 w-0 h-[2px] bg-duckYellow transition-all duration-300 group-hover:w-full"></span>
+                </a>
+                <a href="#showcase" class="text-sm font-bold uppercase tracking-widest text-gray-300 hover:text-duckYellow transition-colors relative group nav-link">
+                    Projetos
+                    <span class="absolute -bottom-2 left-0 w-0 h-[2px] bg-duckYellow transition-all duration-300 group-hover:w-full"></span>
+                </a>
+                
+                <a href="#contato" class="ml-4 bg-white text-black text-sm font-bold uppercase tracking-widest py-2 px-6 rounded-full hover:bg-duckYellow hover:scale-105 transition-all duration-300 shadow-[0_0_15px_rgba(255,255,0,0.0)] hover:shadow-[0_0_20px_rgba(255,255,0,0.4)] nav-link">
+                    Start
+                </a>
             </div>
         </div>
-    </section>
+    </nav>
 
-    <section id="artifacts">
-        <div class="bento-grid">
-            <div class="grid-item">
-                <div class="grid-placeholder"></div>
-                <h3>MANA.DRINK</h3>
-            </div>
-            <div class="grid-item">
-                <div class="grid-placeholder"></div>
-                <h3>HOLO COFFEE</h3>
-            </div>
-            <div class="grid-item">
-                <div class="grid-placeholder"></div>
-                <h3>ÖUS FURNITURE</h3>
-            </div>
-            <div class="grid-item">
-                <div class="grid-placeholder"></div>
-                <h3>BRAND MANUAL</h3>
-            </div>
-            <div class="grid-item" style="grid-column: span 2; background: rgba(255,255,255,0.05);">
-                <h1 style="font-size: 5rem; mix-blend-mode: overlay;">///</h1>
-                <h3>VISUAL SYSTEM</h3>
-            </div>
+    <section id="hero" class="relative h-screen flex flex-col items-center justify-center overflow-hidden">
+        <div class="absolute inset-0 z-0 opacity-30 bg-[url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80')] bg-cover bg-center"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-transparent to-duckDark z-10"></div>
+        
+        <div class="z-20 text-center flex flex-col items-center font-montserrat text-white mt-10">
+            <h2 class="hero-text text-3xl md:text-5xl font-thin uppercase tracking-[0.5em] leading-none mb-2 ml-4">
+                Studio
+            </h2>
+            <h1 class="hero-text text-8xl md:text-[13rem] font-black uppercase tracking-tighter leading-none -mt-3 md:-mt-8" style="text-shadow: 0px 0px 30px rgba(255,255,0,0.15);">
+                Duck
+            </h1>
+            <p class="hero-text mt-8 text-lg md:text-xl font-sans font-light tracking-[0.3em] text-gray-400 uppercase">
+                Design is our weapon.
+            </p>
+        </div>
+        
+        <div class="absolute bottom-10 z-20 animate-bounce">
+            <p class="text-xs uppercase tracking-[0.3em] text-gray-500 font-sans">Scroll to Dive</p>
         </div>
     </section>
 
-    <footer>
-        <p>READY TO TRANSFORM?</p>
-        <a href="#" class="cta-btn">INITIALIZE PROJECT</a>
-        <br><br><br>
-        <small style="opacity: 0.4;">© 2026 STUDIO DUCK / CURITIBA - PR</small>
+    <section id="manifesto" class="min-h-screen flex items-center justify-center py-32 px-6">
+        <div class="max-w-5xl mx-auto">
+            <h2 class="text-4xl md:text-7xl font-bold leading-tight font-sans" id="manifesto-text">
+                </h2>
+        </div>
+    </section>
+
+    <section id="showcase" class="py-32 px-6">
+        <div class="max-w-7xl mx-auto">
+            <h3 class="text-sm font-bold tracking-[0.3em] text-duckYellow uppercase mb-16">
+                // Nossos Projetos
+            </h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                <div class="project-card group relative overflow-hidden rounded-2xl">
+                    <div class="h-[500px] md:h-[600px] w-full overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?auto=format&fit=crop&q=80" alt="Identidade de Marca" class="object-cover w-full h-full transition-transform duration-700 ease-out group-hover:scale-105 group-hover:opacity-80">
+                    </div>
+                    <div class="absolute bottom-0 left-0 w-full p-8 translate-y-4 opacity-0 transition-all duration-500 ease-out group-hover:translate-y-0 group-hover:opacity-100 bg-gradient-to-t from-black/90 to-transparent">
+                        <p class="text-duckYellow text-sm font-bold tracking-widest uppercase mb-2">Brand Identity</p>
+                        <h4 class="text-4xl font-black text-white flex items-center justify-between">
+                            Neon Kicks <span class="text-duckYellow text-3xl">↗</span>
+                        </h4>
+                    </div>
+                </div>
+
+                <div class="project-card group relative overflow-hidden rounded-2xl md:mt-32">
+                    <div class="h-[500px] md:h-[600px] w-full overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&q=80" alt="Experiência Web" class="object-cover w-full h-full transition-transform duration-700 ease-out group-hover:scale-105 group-hover:opacity-80">
+                    </div>
+                    <div class="absolute bottom-0 left-0 w-full p-8 translate-y-4 opacity-0 transition-all duration-500 ease-out group-hover:translate-y-0 group-hover:opacity-100 bg-gradient-to-t from-black/90 to-transparent">
+                        <p class="text-duckYellow text-sm font-bold tracking-widest uppercase mb-2">Web Experience</p>
+                        <h4 class="text-4xl font-black text-white flex items-center justify-between">
+                            Cyber UI <span class="text-duckYellow text-3xl">↗</span>
+                        </h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer id="contato" class="bg-black py-20 px-6 border-t border-white/10">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center">
+            <div>
+                <h2 class="text-5xl font-black text-white tracking-tighter uppercase mb-4 font-montserrat">
+                    Ready to <span class="text-duckYellow">Quack?</span>
+                </h2>
+                <p class="text-gray-400 text-lg">Inicie seu projeto com o Studio Duck.</p>
+            </div>
+            <div class="mt-10 md:mt-0">
+                <a href="https://wa.me/41995484601" target="_blank" rel="noopener noreferrer" class="inline-block bg-duckYellow text-black font-bold uppercase tracking-widest py-4 px-8 rounded-full hover:bg-white transition-colors hover:scale-105 duration-300 shadow-[0_0_15px_rgba(255,255,0,0.2)]">
+                    Fale com a gente
+                </a>
+            </div>
+        </div>
     </footer>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
     <script>
-        // Efeito simples de Parallax no Scroll
-        window.addEventListener('scroll', () => {
-            const scrolled = window.scrollY;
-            const heroText = document.querySelectorAll('.hero-text');
+        document.addEventListener("DOMContentLoaded", () => {
+            gsap.registerPlugin(ScrollTrigger);
+
+            // --- LÓGICA DO CURSOR CUSTOMIZADO ---
+            const cursor = document.getElementById('custom-cursor');
             
-            heroText.forEach((text, index) => {
-                const speed = (index + 1) * 0.2;
-                text.style.transform = `translateY(${scrolled * speed}px)`;
+            document.addEventListener('mousemove', (e) => {
+                cursor.style.left = e.clientX + 'px';
+                cursor.style.top = e.clientY + 'px';
+            });
+
+            const interactables = document.querySelectorAll('a, .project-card, button');
+            interactables.forEach(el => {
+                el.addEventListener('mouseenter', () => cursor.classList.add('scale-[3]', 'bg-white'));
+                el.addEventListener('mouseleave', () => cursor.classList.remove('scale-[3]', 'bg-white'));
+            });
+
+            // --- LÓGICA DE SMOOTH SCROLL PARA LINKS INTERNOS ---
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    const targetSection = document.querySelector(targetId);
+                    
+                    if (targetSection) {
+                        const offsetTop = targetSection.getBoundingClientRect().top + window.scrollY - 80;
+                        window.scrollTo({ top: offsetTop, behavior: 'smooth' });
+                    }
+                });
+            });
+
+            // --- ANIMAÇÕES GSAP ---
+            
+            // 1. Setup e injeção do Manifesto
+            const manifestoSentence = "Não fazemos apenas design. Nós forjamos identidades que dominam o mercado e redefinem o padrão digital.";
+            const manifestoContainer = document.getElementById("manifesto-text");
+            
+            manifestoSentence.split(" ").forEach(word => {
+                const span = document.createElement("span");
+                span.className = "manifesto-word inline-block mr-3 md:mr-5";
+                span.innerText = word;
+                manifestoContainer.appendChild(span);
+            });
+
+            // 2. Animação Hero (Entrada)
+            gsap.from(".hero-text", {
+                y: 50,
+                opacity: 0,
+                duration: 1.5,
+                stagger: 0.2,
+                ease: "power4.out",
+                delay: 0.2
+            });
+
+            // 3. Animação Manifesto (Scroll Reveal)
+            gsap.to(".manifesto-word", {
+                opacity: 1,
+                stagger: 0.1,
+                scrollTrigger: {
+                    trigger: "#manifesto",
+                    start: "top 60%",
+                    end: "bottom 80%",
+                    scrub: 1,
+                }
+            });
+
+            // 4. Animação Showcase (Entrada Parallax)
+            gsap.from(".project-card", {
+                y: 100,
+                opacity: 0,
+                duration: 1,
+                stagger: 0.2,
+                scrollTrigger: {
+                    trigger: "#showcase",
+                    start: "top 70%",
+                    end: "bottom bottom",
+                }
             });
         });
     </script>
