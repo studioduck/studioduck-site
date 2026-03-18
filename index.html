@@ -25,7 +25,13 @@
             overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
         }
-
+/* Isso remove a setinha do mouse em telas de computador */
+@media (min-width: 768px) { 
+    body { cursor: none; } 
+    
+    /* Importante: Mantém a setinha apenas nos botões para o usuário saber onde clicar */
+    button, a, input, [role="button"] { cursor: pointer; }
+}
         /* --- SPOTLIGHT --- */
         #spotlight {
             position: fixed; width: 600px; height: 600px;
