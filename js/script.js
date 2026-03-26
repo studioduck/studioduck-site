@@ -30,7 +30,7 @@ function playDuckStep() {
     osc.frequency.setValueAtTime(150, now);
     osc.frequency.exponentialRampToValueAtTime(10, now + 0.05);
     
-    gain.gain.setValueAtTime(0.09, now); 
+    gain.gain.setValueAtTime(0.04, now); 
     gain.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
     
     osc.connect(gain); 
