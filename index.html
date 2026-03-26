@@ -202,7 +202,7 @@
             osc.type = 'triangle'; 
             osc.frequency.setValueAtTime(200, now);
             osc.frequency.exponentialRampToValueAtTime(1, now + 0.1);
-            gain.gain.setValueAtTime(0.15, now); 
+            gain.gain.setValueAtTime(0.05, now); 
             gain.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
             osc.connect(gain); 
             gain.connect(audioCtx.destination);
