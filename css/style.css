@@ -6,7 +6,28 @@
     --glass-bg: rgba(18, 18, 18, 0.7);
 }
 
-* { margin: 0; padding: 0; box-sizing: border-box; }
+/* BLOQUEIO DE SELEÇÃO GLOBAL 
+   Impede o destaque azul ao clicar/arrastar, ideal para interfaces interativas.
+*/
+* { 
+    margin: 0; 
+    padding: 0; 
+    box-sizing: border-box; 
+    -webkit-user-select: none; /* Safari */
+    -ms-user-select: none;      /* IE/Edge */
+    user-select: none;          /* Chrome, Firefox, Opera */
+    -webkit-tap-highlight-color: transparent; /* Remove o flash cinza ao tocar no mobile */
+}
+
+/* EXCEÇÃO PARA FORMULÁRIOS
+   Permite que o usuário selecione e digite nos campos de texto.
+*/
+input, textarea, [contenteditable="true"] {
+    -webkit-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
+    cursor: text; /* Mostra o cursor de texto nos campos */
+}
 
 body {
     background-color: var(--preto);
