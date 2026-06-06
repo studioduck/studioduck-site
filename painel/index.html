@@ -158,7 +158,6 @@
 
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // Trava desativada temporariamente para o layout carregar direto
         async function checkSession() {
             loadClients();
         }
@@ -202,10 +201,11 @@
             listDiv.innerHTML = '<p style="font-size:0.85rem;color:gray;">Carregando bando...</p>';
 
             try {
+                // CORREÇÃO: Agora puxa e ordena pelo ID em ordem decrescente (mais novos primeiro)
                 const { data: clientes, error } = await supabaseClient
                     .from('clientes')
                     .select('*')
-                    .order('created_at', { ascending: false });
+                    .order('id', { ascending: false });
 
                 if (error) {
                     listDiv.innerHTML = `<p style="color:red;">Erro ao carregar dados: ${error.message}</p>`;
@@ -227,7 +227,7 @@
                     card.innerHTML = `
                         <div class="client-info">
                             <h3>${c.nome_cliente}</h3>
-                            <p>Projeto: ${c.nome_projeto} | Status: <strong>${c.status}</strong></p>
+                            <p>Projeto: ${c.nome_projeto || 'Não informado'} | Status: <strong>${c.status}</strong></p>
                         </div>
                         <button class="btn-copy" onclick="navigator.clipboard.writeText('${urlCompleta}'); alert('Link copiado!');">Copiar Link</button>
                     `;
