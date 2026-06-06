@@ -28,7 +28,7 @@
             background-color: var(--preto);
             color: var(--off-white);
             padding: 40px 5%;
-            display: none; /* Fica escondido até o script validar que você está logado */
+            /* REMOVEMOS o display: none para a página não iniciar invisível */
         }
 
         header {
@@ -89,7 +89,6 @@
         }
         .btn-primary:hover { opacity: 0.9; }
 
-        /* Lista de Clientes */
         .client-card {
             background: var(--chumbo-light);
             padding: 15px;
@@ -126,30 +125,31 @@
 </head>
 <body>
 
-    <header>
-        <h1>PAINEL DE <span class="highlight">CONTROLE</span></h1>
-        <button class="btn-logout" id="btn-logout">SAIR DO LAGO</button>
-    </header>
+    <div id="painel-conteudo">
+        <header>
+            <h1>PAINEL DE <span class="highlight">CONTROLE</span></h1>
+            <button class="btn-logout" id="btn-logout">SAIR DO LAGO</button>
+        </header>
 
-    <div class="grid">
-        <div class="box">
-            <h2>NOVO BRIEFING</h2>
-            <div class="form-group">
-                <label>NOME DO CLIENTE</label>
-                <input type="text" id="client-name" placeholder="Ex: Thiago Gil">
-            </div>
-            <div class="form-group">
-                <label>NOME DO PROJETO</label>
-                <input type="text" id="project-name" placeholder="Ex: Loft Industrial">
-            </div>
-            <button class="btn-primary" id="btn-generate">GERAR LINK IMERSIVO</button>
-            <div id="link-output"></div>
-        </div>
-
-        <div class="box">
-            <h2>BANDO DE CLIENTES CADASTRADOS</h2>
-            <div id="clients-list">
+        <div class="grid">
+            <div class="box">
+                <h2>NOVO BRIEFING</h2>
+                <div class="form-group">
+                    <label>NOME DO CLIENTE</label>
+                    <input type="text" id="client-name" placeholder="Ex: Thiago Gil">
                 </div>
+                <div class="form-group">
+                    <label>NOME DO PROJETO</label>
+                    <input type="text" id="project-name" placeholder="Ex: Loft Industrial">
+                </div>
+                <button class="btn-primary" id="btn-generate">GERAR LINK IMERSIVO</button>
+                <div id="link-output"></div>
+            </div>
+
+            <div class="box">
+                <h2>BANDO DE CLIENTES CADASTRADOS</h2>
+                <div id="clients-list"></div>
+            </div>
         </div>
     </div>
 
@@ -159,26 +159,26 @@
 
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // TRANCA DE SEGURANÇA: Só exibe o painel se houver sessão ativa
+        // Checagem de segurança simplificada
         async function checkSession() {
-            const { data: { session } } = await supabaseClient.auth.getSession();
-            if (!session) {
-                // Se não estiver logado, chuta de volta para o login
+            const { data: { session }, error } = await supabaseClient.auth.getSession();
+            
+            if (error || !session) {
+                alert("Acesso restrito. Por favor, faça login primeiro.");
                 window.location.href = '/login';
             } else {
-                // Se estiver logado, exibe a página e carrega os dados
-                document.body.style.display = 'block';
+                // Se a sessão estiver ativa, carrega a lista de clientes
                 loadClients();
             }
         }
+        
+        // Executa a checagem assim que a página abre
         checkSession();
 
-        // Gerador de Token aleatório para a URL única
         function generateToken() {
             return 'duck_' + Math.random().toString(36).substring(2, 11);
         }
 
-        // Função para Cadastrar e Gerar o Link
         document.getElementById('btn-generate').addEventListener('click', async () => {
             const name = document.getElementById('client-name').value;
             const project = document.getElementById('project-name').value;
@@ -189,7 +189,6 @@
                 return;
             }
 
-            // Envia os dados salvando direto na tabela "clientes" do Supabase
             const { data, error } = await supabaseClient
                 .from('clientes')
                 .insert([{ nome_cliente: name, nome_projeto: project, link_token: token, status: 'Pendente' }]);
@@ -197,20 +196,62 @@
             if (error) {
                 alert('Erro ao salvar no banco: ' + error.message);
             } else {
-                // Constrói o link personalizado do cliente
                 const finalLink = `https://www.studioduck.com.br/briefing?id=${token}`;
                 const output = document.getElementById('link-output');
                 output.innerHTML = `<strong>Link gerado com sucesso:</strong><br>${finalLink}`;
                 output.style.display = 'block';
                 
-                // Limpa campos e recarrega a lista lateral
                 document.getElementById('client-name').value = '';
                 document.getElementById('project-name').value = '';
                 loadClients();
             }
         });
 
-        // Função para carregar a lista de clientes cadastrados do banco de dados
         async function loadClients() {
             const listDiv = document.getElementById('clients-list');
-            listDiv.innerHTML = '<p style="font-size:0.8
+            listDiv.innerHTML = '<p style="font-size:0.85rem;color:gray;">Carregando bando...</p>';
+
+            try {
+                const { data: clientes, error } = await supabaseClient
+                    .from('clientes')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+
+                if (error) {
+                    listDiv.innerHTML = `<p style="color:red;">Erro ao carregar dados: ${error.message}</p>`;
+                    return;
+                }
+
+                if (!clientes || clientes.length === 0) {
+                    listDiv.innerHTML = '<p style="font-size:0.85rem;color:gray;">Nenhum cliente gerado ainda.</p>';
+                    return;
+                }
+
+                listDiv.innerHTML = '';
+                clientes.forEach(c => {
+                    const card = document.createElement('div');
+                    card.className = `client-card ${c.status}`;
+                    
+                    const urlCompleta = `https://www.studioduck.com.br/briefing?id=${c.link_token}`;
+
+                    card.innerHTML = `
+                        <div class="client-info">
+                            <h3>${c.nome_cliente}</h3>
+                            <p>Projeto: ${c.nome_projeto} | Status: <strong>${c.status}</strong></p>
+                        </div>
+                        <button class="btn-copy" onclick="navigator.clipboard.writeText('${urlCompleta}'); alert('Link copiado!');">Copiar Link</button>
+                    `;
+                    listDiv.appendChild(card);
+                });
+            } catch (err) {
+                listDiv.innerHTML = '<p style="color:red;">Erro crítico ao renderizar lista.</p>';
+            }
+        }
+
+        document.getElementById('btn-logout').addEventListener('click', async () => {
+            await supabaseClient.auth.signOut();
+            window.location.href = '/login';
+        });
+    </script>
+</body>
+</html>
