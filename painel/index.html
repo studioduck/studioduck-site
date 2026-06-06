@@ -28,7 +28,6 @@
             background-color: var(--preto);
             color: var(--off-white);
             padding: 40px 5%;
-            /* REMOVEMOS o display: none para a página não iniciar invisível */
         }
 
         header {
@@ -159,20 +158,11 @@
 
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // Checagem de segurança simplificada
+        // Trava desativada temporariamente para o layout carregar direto
         async function checkSession() {
-            const { data: { session }, error } = await supabaseClient.auth.getSession();
-            
-            if (error || !session) {
-                alert("Acesso restrito. Por favor, faça login primeiro.");
-                window.location.href = '/login';
-            } else {
-                // Se a sessão estiver ativa, carrega a lista de clientes
-                loadClients();
-            }
+            loadClients();
         }
         
-        // Executa a checagem assim que a página abre
         checkSession();
 
         function generateToken() {
