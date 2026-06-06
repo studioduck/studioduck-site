@@ -132,11 +132,13 @@
     </div>
 
     <script>
+        <script>
         // --- CONEXÃO COM O SEU PROJETO DO SUPABASE ---
         const SUPABASE_URL = 'https://mujzdunuibagimiripcc.supabase.co'; 
         const SUPABASE_ANON_KEY = 'sb_publishable__VLVH5QkuKF3QBnlJoyUqA_BHFW95hl';
 
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        // Mudamos o nome aqui de "supabase" para "supabaseClient" para resolver o erro do console
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         const btnLogin = document.getElementById('btn-login');
         const errorBox = document.getElementById('error-box');
@@ -152,7 +154,8 @@
             errorBox.style.display = 'none';
 
             try {
-                const { data, error } = await supabase.auth.signInWithPassword({
+                // Usando a variável corrigida aqui também
+                const { data, error } = await supabaseClient.auth.signInWithPassword({
                     email: email,
                     password: password,
                 });
@@ -180,5 +183,3 @@
             if (e.key === 'Enter') handleLogin();
         });
     </script>
-</body>
-</html>
