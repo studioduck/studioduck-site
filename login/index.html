@@ -6,7 +6,6 @@
     <title>Studio Duck | Admin Login</title>
     
     <link rel="icon" type="image/png" href="/CABECA.png?v=1">
-    
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
@@ -17,7 +16,6 @@
             --chumbo-dark: #121212;
         }
 
-        /* Bloqueio de seleção agressivo que você usa nas outras páginas */
         * {
             margin: 0; padding: 0; box-sizing: border-box;
             -webkit-user-select: none !important;
@@ -68,7 +66,6 @@
             margin-bottom: 8px;
         }
 
-        /* Inputs liberados apenas para digitação de texto */
         input {
             width: 100%;
             padding: 14px;
@@ -83,9 +80,7 @@
             user-select: text !important;
         }
 
-        input:focus {
-            border-color: var(--neon-orange);
-        }
+        input:focus { border-color: var(--neon-orange); }
 
         button {
             width: 100%;
@@ -106,9 +101,13 @@
 
         .error-msg {
             color: #ff3333;
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             margin-top: 15px;
             display: none;
+            background: rgba(255, 51, 51, 0.1);
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid rgba(255, 51, 51, 0.2);
         }
     </style>
 </head>
@@ -128,58 +127,58 @@
         </div>
 
         <button id="btn-login">ENTRAR NO LAGO</button>
-        <div class="error-msg" id="error-box">Usuário ou senha incorretos.</div>
+        <div class="error-msg" id="error-box"></div>
     </div>
 
     <script>
-        <script>
-        // --- CONEXÃO COM O SEU PROJETO DO SUPABASE ---
         const SUPABASE_URL = 'https://mujzdunuibagimiripcc.supabase.co'; 
         const SUPABASE_ANON_KEY = 'sb_publishable__VLVH5QkuKF3QBnlJoyUqA_BHFW95hl';
 
-        // Mudamos o nome aqui de "supabase" para "supabaseClient" para resolver o erro do console
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         const btnLogin = document.getElementById('btn-login');
         const errorBox = document.getElementById('error-box');
 
-        // Função de teste com alertas para descobrir onde o código trava
         async function handleLogin() {
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
             
-            // TESTE 1: Confirmação visual de clique
-            alert('Botão clicado! Tentando conectar com o e-mail: ' + email);
-
             errorBox.style.display = 'none';
+            errorBox.innerText = '';
+
+            if (!email || !password) {
+                errorBox.innerText = "Por favor, preencha todos os campos.";
+                errorBox.style.display = 'block';
+                return;
+            }
 
             try {
-                // Usando a variável corrigida aqui também
                 const { data, error } = await supabaseClient.auth.signInWithPassword({
                     email: email,
                     password: password,
                 });
 
                 if (error) {
-                    // TESTE 2 (Erro): Caso o Supabase recuse as credenciais
-                    alert('O Supabase respondeu com ERRO: ' + error.message);
-                    errorBox.innerText = "Erro: " + error.message;
+                    if (error.message.includes("Invalid login credentials")) {
+                        errorBox.innerText = "E-mail ou senha incorretos.";
+                    } else {
+                        errorBox.innerText = "Erro: " + error.message;
+                    }
                     errorBox.style.display = 'block';
                 } else {
-                    // TESTE 2 (Sucesso): Caso dê tudo certo
-                    alert('LOGIN COM SUCESSO! Redirecionando para o painel...');
                     window.location.href = '/painel';
                 }
             } catch (err) {
-                // TESTE 3 (Falha crítica): Se a biblioteca quebrar por algum motivo
-                alert('Erro crítico de código: ' + err.message);
+                errorBox.innerText = "Falha de conexão com o servidor.";
+                errorBox.style.display = 'block';
             }
         }
 
         btnLogin.addEventListener('click', handleLogin);
 
-        // Permite logar apertando o botão "Enter" do teclado
         window.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') handleLogin();
         });
     </script>
+</body>
+</html>
